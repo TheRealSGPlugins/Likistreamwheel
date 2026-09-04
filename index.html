@@ -5,271 +5,28 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>SG OSRS Prize Wheel</title>
 <style>
-:root{
-  --bg:#11151a;--panel:#1a2027;--card:#202730;--text:#f3f5f7;--muted:#a8b0ba;
-  --border:#39424d;--accent:#66fafe;--accent2:#8561bb;--gold:#d6a62f;
-}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--text);font-family:Arial,Helvetica,sans-serif}
-.wrap{max-width:1180px;margin:0 auto;padding:22px}
-.grid{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:20px;align-items:start}
-.wheel-wrap{position:relative;max-width:760px;margin:auto;aspect-ratio:1/1}
-.pointer{position:absolute;left:50%;top:0;transform:translateX(-50%);z-index:5;width:0;height:0;
-border-left:18px solid transparent;border-right:18px solid transparent;border-top:38px solid #f0c34d}
-svg{width:100%;height:100%;display:block}
-.actions{display:grid;grid-template-columns:1fr auto;gap:10px;margin-top:10px}
-button{min-height:48px;border-radius:12px;padding:12px 18px;font-weight:800;border:1px solid var(--border);cursor:pointer}
-#spin{background:linear-gradient(90deg,var(--accent2),var(--accent));color:#081014;border:none}
-#clear{background:var(--card);color:var(--text)}
-button:disabled{opacity:.55;cursor:not-allowed}
-.card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px}
-.result{margin-top:12px;text-align:center}
-.small{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
-.big{font-size:22px;font-weight:900;margin-top:5px}
-.side{display:grid;gap:12px}
-.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.statnum{font-size:22px;font-weight:900;margin-top:4px}
-.mix{display:grid;grid-template-columns:1fr auto;gap:4px 10px;font-size:14px}
-.jp{border-left:4px solid #f0c34d;padding-left:9px;margin:9px 0}
-.history{display:grid;gap:8px;font-size:14px}
-.row{display:flex;justify-content:space-between;gap:12px}
-.row strong{white-space:nowrap}
-@media(max-width:850px){.grid{grid-template-columns:1fr}.side{grid-template-columns:1fr 1fr}.history-card{grid-column:1/-1}}
-@media(max-width:520px){.wrap{padding:12px}.actions{grid-template-columns:1fr}.side{grid-template-columns:1fr}.stats{grid-template-columns:1fr 1fr}}
+:root{--bg:#11151a;--panel:#1a2027;--card:#202730;--text:#f3f5f7;--muted:#a8b0ba;--border:#39424d;--accent:#66fafe;--accent2:#8561bb;--gold:#d6a62f}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Arial,Helvetica,sans-serif}.wrap{max-width:1180px;margin:0 auto;padding:22px}.grid{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:20px;align-items:start}.wheel-wrap{position:relative;max-width:760px;margin:auto;aspect-ratio:1/1}.pointer{position:absolute;left:50%;top:0;transform:translateX(-50%);z-index:5;width:0;height:0;border-left:18px solid transparent;border-right:18px solid transparent;border-top:38px solid #f0c34d}svg{width:100%;height:100%;display:block}.actions{display:grid;grid-template-columns:1fr auto;gap:10px;margin-top:10px}button{min-height:48px;border-radius:12px;padding:12px 18px;font-weight:800;border:1px solid var(--border);cursor:pointer}#spin{background:linear-gradient(90deg,var(--accent2),var(--accent));color:#081014;border:none}#clear{background:var(--card);color:var(--text)}button:disabled{opacity:.55;cursor:not-allowed}.card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px}.result{margin-top:12px;text-align:center}.small{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}.big{font-size:22px;font-weight:900;margin-top:5px}.side{display:grid;gap:12px}.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px}.statnum{font-size:22px;font-weight:900;margin-top:4px}.mix{display:grid;grid-template-columns:1fr auto;gap:4px 10px;font-size:14px}.jp{border-left:4px solid #f0c34d;padding-left:9px;margin:9px 0}.history{display:grid;gap:8px;font-size:14px}.row{display:flex;justify-content:space-between;gap:12px}.row strong{white-space:nowrap}@media(max-width:850px){.grid{grid-template-columns:1fr}.side{grid-template-columns:1fr 1fr}.history-card{grid-column:1/-1}}@media(max-width:520px){.wrap{padding:12px}.actions{grid-template-columns:1fr}.side{grid-template-columns:1fr}.stats{grid-template-columns:1fr 1fr}}
 </style>
 </head>
 <body>
-<div class="wrap">
-  <div class="grid">
-    <section>
-      <div class="wheel-wrap">
-        <div class="pointer"></div>
-        <svg viewBox="0 0 940 940" aria-label="150 slot OSRS prize wheel">
-          <defs>
-            <filter id="glow" x="-70%" y="-70%" width="240%" height="240%">
-              <feGaussianBlur stdDeviation="4" result="b"/>
-              <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
-            </filter>
-          </defs>
-          <circle cx="470" cy="470" r="438" fill="#1a2027" stroke="#39424d" stroke-width="8"/>
-          <g id="rotor" style="transform-origin:470px 470px;transition:transform 4.7s cubic-bezier(.08,.72,.08,1)"></g>
-          <circle cx="470" cy="470" r="112" fill="#1a2027" stroke="#39424d" stroke-width="5"/>
-          <circle cx="470" cy="470" r="91" fill="#202730" stroke="#39424d" stroke-width="2"/>
-          <text x="470" y="458" text-anchor="middle" font-size="34" font-weight="900" fill="#f3f5f7">SG</text>
-          <text x="470" y="490" text-anchor="middle" font-size="17" font-weight="800" fill="#f3f5f7">PRIZE WHEEL</text>
-          <text x="470" y="515" text-anchor="middle" font-size="13" fill="#a8b0ba">150 SLOTS</text>
-        </svg>
-      </div>
-
-      <div class="actions">
-        <button id="spin" disabled>LOADING…</button>
-        <button id="clear" disabled>Clear List</button>
-      </div>
-
-      <div id="result" class="card result" aria-live="polite">
-        <div class="small">Winning item</div>
-        <div class="big">Ready to spin</div>
-      </div>
-    </section>
-
-    <aside class="side">
-      <div class="stats">
-        <div class="card"><div class="small">Spins</div><div id="spinCount" class="statnum">0</div></div>
-        <div class="card"><div class="small">Total won</div><div id="total" class="statnum">0 GP</div></div>
-      </div>
-
-      <div class="card">
-        <strong>Wheel mix</strong>
-        <div class="mix" style="margin-top:10px">
-          <span>10–15m</span><strong>98</strong>
-          <span>15–25m</span><strong>27</strong>
-          <span>25–40m</span><strong>13</strong>
-          <span>40–70m</span><strong>9</strong>
-          <span>Jackpots</span><strong>3</strong>
-        </div>
-      </div>
-
-      <div class="card">
-        <strong>JACKPOTS</strong>
-        <div class="jp"><strong>Soulreaper axe</strong><div class="small">Slot 1</div></div>
-        <div class="jp"><strong>Zaryte crossbow</strong><div class="small">Slot 51</div></div>
-        <div class="jp"><strong>Inquisitor's mace</strong><div class="small">Slot 101</div></div>
-      </div>
-
-      <div class="card history-card">
-        <div class="row"><strong>Items won</strong><span id="itemCount" class="small">0 items</span></div>
-        <div id="history" class="history" style="margin-top:10px;color:var(--muted)">No items yet.</div>
-      </div>
-    </aside>
-  </div>
-</div>
-
+<div class="wrap"><div class="grid"><section><div class="wheel-wrap"><div class="pointer"></div><svg viewBox="0 0 940 940" aria-label="150 slot OSRS prize wheel"><defs><filter id="glow" x="-70%" y="-70%" width="240%" height="240%"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><circle cx="470" cy="470" r="438" fill="#1a2027" stroke="#39424d" stroke-width="8"/><g id="rotor" style="transform-origin:470px 470px;transition:transform 4.7s cubic-bezier(.08,.72,.08,1)"></g><circle cx="470" cy="470" r="112" fill="#1a2027" stroke="#39424d" stroke-width="5"/><circle cx="470" cy="470" r="91" fill="#202730" stroke="#39424d" stroke-width="2"/><text x="470" y="458" text-anchor="middle" font-size="34" font-weight="900" fill="#f3f5f7">SG</text><text x="470" y="490" text-anchor="middle" font-size="17" font-weight="800" fill="#f3f5f7">PRIZE WHEEL</text><text x="470" y="515" text-anchor="middle" font-size="13" fill="#a8b0ba">150 SLOTS</text></svg></div><div class="actions"><button id="spin" disabled>LOADING…</button><button id="clear" disabled>Clear List</button></div><div id="result" class="card result" aria-live="polite"><div class="small">Winning item</div><div class="big">Ready to spin</div></div></section><aside class="side"><div class="stats"><div class="card"><div class="small">Spins</div><div id="spinCount" class="statnum">0</div></div><div class="card"><div class="small">Total won</div><div id="total" class="statnum">0 GP</div></div></div><div class="card"><strong>Wheel mix</strong><div class="mix" style="margin-top:10px"><span>10–15m</span><strong>98</strong><span>15–25m</span><strong>27</strong><span>25–40m</span><strong>13</strong><span>40–70m</span><strong>9</strong><span>Jackpots</span><strong>3</strong></div></div><div class="card"><strong>JACKPOTS</strong><div class="jp"><strong>Soulreaper axe</strong><div class="small">Slot 1</div></div><div class="jp"><strong>Zaryte crossbow</strong><div class="small">Slot 51</div></div><div class="jp"><strong>Inquisitor's mace</strong><div class="small">Slot 101</div></div></div><div class="card history-card"><div class="row"><strong>Items won</strong><span id="itemCount" class="small">0 items</span></div><div id="history" class="history" style="margin-top:10px;color:var(--muted)">No items yet.</div></div></aside></div></div>
 <script>
 (()=>{
-  const jackpots={
-    0:{name:'Soulreaper axe',value:400},
-    50:{name:'Zaryte crossbow',value:359},
-    100:{name:"Inquisitor's mace",value:325}
-  };
-
-  const low=[
-    {name:'Skeletal visage',value:12.4},
-    {name:'Gilded scimitar',value:12.4},
-    {name:'3rd age vambraces',value:12.9},
-    {name:'3rd age range coif',value:14.8},
-    {name:'3rd age range legs',value:14.9},
-    {name:'Annihilation weapon scroll',value:14.0},
-    {name:'Armageddon weapon scroll',value:14.0}
-  ];
-
-  const mid=[
-    {name:'Bandos tassets',value:15.1},
-    {name:'Abyssal bludgeon',value:16.9},
-    {name:'Dexterous prayer scroll',value:17.2},
-    {name:'Primordial crystal',value:18.4},
-    {name:'Ring of suffering',value:19.9},
-    {name:'Necklace of anguish',value:20.3},
-    {name:'Crystal tool seed',value:22.1},
-    {name:'Bandos chestplate',value:23.8}
-  ];
-
-  const upper=[
-    {name:'3rd age range top',value:28.1},
-    {name:'3rd age robe',value:28.6},
-    {name:'Dragon hunter crossbow',value:30.5},
-    {name:'3rd age plateskirt',value:34.0},
-    {name:'Armadyl crossbow',value:38.0}
-  ];
-
-  const high=[
-    {name:'3rd age amulet',value:47.0},
-    {name:'Dragon hunter lance',value:48.5},
-    {name:'Kodai wand',value:59.0},
-    {name:'Dragon metal slice',value:59.0},
-    {name:'3rd age kiteshield',value:64.0}
-  ];
-
-  const prizes=new Array(150),bands=new Array(150);
-  Object.keys(jackpots).forEach(k=>{prizes[+k]=jackpots[k];bands[+k]='jp'});
-
-  const normalPool=[];
-  function addToPool(count,arr,band){
-    for(let j=0;j<count;j++){
-      normalPool.push({prize:{...arr[j%arr.length]},band});
-    }
-  }
-  addToPool(98,low,'low');
-  addToPool(27,mid,'mid');
-  addToPool(13,upper,'upper');
-  addToPool(9,high,'high');
-
-  function shuffle(array){
-    for(let i=array.length-1;i>0;i--){
-      const j=Math.floor(Math.random()*(i+1));
-      [array[i],array[j]]=[array[j],array[i]];
-    }
-  }
-  shuffle(normalPool);
-
-  let normalIndex=0;
-  for(let i=0;i<150;i++){
-    if(Object.prototype.hasOwnProperty.call(jackpots,i)) continue;
-    const entry=normalPool[normalIndex++];
-    prizes[i]=entry.prize;
-    bands[i]=entry.band;
-  }
-
-  const rotor=document.getElementById('rotor');
-  const spin=document.getElementById('spin');
-  const clear=document.getElementById('clear');
-  const result=document.getElementById('result');
-  const history=document.getElementById('history');
-  const spinCountEl=document.getElementById('spinCount');
-  const totalEl=document.getElementById('total');
-  const itemCountEl=document.getElementById('itemCount');
-
-  const cx=470,cy=470,R=423,r=118,N=150,step=360/N;
-  const fills={low:'#30343a',mid:'#3d434a',upper:'#4b525a',high:'#5b636c',jp:'#d6a62f'};
-
-  function polar(rad,d){const a=(d-90)*Math.PI/180;return[cx+rad*Math.cos(a),cy+rad*Math.sin(a)]}
-  function wedge(a,b){
-    const A=polar(R,a),B=polar(R,b),C=polar(r,b),D=polar(r,a);
-    return `M ${A[0]} ${A[1]} A ${R} ${R} 0 0 1 ${B[0]} ${B[1]} L ${C[0]} ${C[1]} A ${r} ${r} 0 0 0 ${D[0]} ${D[1]} Z`;
-  }
-  function short(s){
-    return s.replace("Inquisitor's",'Inq.').replace('Dragon hunter','DH')
-      .replace('Annihilation weapon scroll','Annihilation')
-      .replace('Armageddon weapon scroll','Armageddon')
-      .replace('Dexterous prayer scroll','Dexterous')
-      .replace('Necklace of anguish','Anguish').replace('3rd age','3a');
-  }
-  function gp(v){if(v>=1000)return(v/1000).toFixed(2)+'B GP';return v.toFixed(v>=100?0:1)+'m GP'}
-
-  for(let i=0;i<N;i++){
-    const a=i*step,b=(i+1)*step,m=a+step/2,isJ=bands[i]==='jp';
-    const path=document.createElementNS('http://www.w3.org/2000/svg','path');
-    path.setAttribute('d',wedge(a,b));
-    path.setAttribute('fill',fills[bands[i]]);
-    path.setAttribute('stroke',isJ?'#fff0a8':'#181b1f');
-    path.setAttribute('stroke-width',isJ?'4':'0.65');
-    if(isJ)path.setAttribute('filter','url(#glow)');
-    rotor.appendChild(path);
-
-    const [x,y]=polar(275,m);
-    const g=document.createElementNS('http://www.w3.org/2000/svg','g');
-    g.setAttribute('transform',`translate(${x} ${y}) rotate(${m+90})`);
-    const t=document.createElementNS('http://www.w3.org/2000/svg','text');
-    t.setAttribute('text-anchor','middle');
-    t.setAttribute('font-size',isJ?'10.5':'7.2');
-    t.setAttribute('font-weight',isJ?'900':'600');
-    t.setAttribute('fill',isJ?'#181202':'#f4f5f6');
-    t.textContent=isJ?'★ '+short(prizes[i].name)+' ★':short(prizes[i].name);
-    g.appendChild(t);rotor.appendChild(g);
-  }
-
-  let rotation=0,busy=false,rolls=[],total=0;
-  const reduced=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if(reduced)rotor.style.transition='transform .01s linear';
-
-  function renderList(){
-    spinCountEl.textContent=String(rolls.length);
-    itemCountEl.textContent=rolls.length+(rolls.length===1?' item':' items');
-    totalEl.textContent=gp(total);
-    if(!rolls.length){history.textContent='No items yet.';clear.disabled=true;return}
-    clear.disabled=false;
-    const grouped=new Map();
-    rolls.forEach(r=>{
-      const key=r.name+'|'+r.value+'|'+r.jp;
-      if(!grouped.has(key))grouped.set(key,{...r,count:0});
-      grouped.get(key).count++;
-    });
-    history.innerHTML=Array.from(grouped.values()).map(r=>
-      `<div class="row"><span>${r.jp?'🏆 ':''}${r.name}${r.count>1?' ×'+r.count:''}</span><strong>${gp(r.value*r.count)}</strong></div>`
-    ).join('');
-  }
-
-  spin.disabled=false;spin.textContent='SPIN WHEEL';renderList();
-
-  spin.addEventListener('click',()=>{
-    if(busy)return;
-    busy=true;spin.disabled=true;spin.textContent='SPINNING…';
-    const idx=Math.floor(Math.random()*N),center=idx*step+step/2,target=360-center,current=((rotation%360)+360)%360;
-    rotation+=360*7+((target-current)+360)%360;
-    rotor.style.transform=`rotate(${rotation}deg)`;
-    setTimeout(()=>{
-      const prize=prizes[idx],isJ=bands[idx]==='jp';
-      rolls.push({name:prize.name,value:prize.value,jp:isJ});total+=prize.value;
-      result.innerHTML=`<div class="small">Slot #${idx+1}</div><div class="big">${isJ?'🏆 ':''}${prize.name}</div><div style="margin-top:5px;font-weight:800">${gp(prize.value)}</div>${isJ?'<div style="margin-top:5px;font-weight:900;color:#f0c34d">JACKPOT!</div>':''}`;
-      renderList();busy=false;spin.disabled=false;spin.textContent='SPIN AGAIN';
-    },reduced?30:4750);
-  });
-
-  clear.addEventListener('click',()=>{
-    if(busy)return;
-    rolls=[];total=0;
-    result.innerHTML='<div class="small">Winning item</div><div class="big">List cleared</div>';
-    renderList();
-  });
+const jackpots={0:{name:'Soulreaper axe',value:400},50:{name:'Zaryte crossbow',value:359},100:{name:"Inquisitor's mace",value:325}};
+const low=[
+{name:'Skeletal visage',value:12.2},{name:'Gilded scimitar',value:12.1},{name:'3rd age vambraces',value:11.5},{name:'3rd age range legs',value:14.4},{name:'Annihilation weapon scroll',value:14.0},{name:'Armageddon weapon scroll',value:14.0},{name:'Basilisk jaw',value:13.2},{name:'Gilded dragonhide set',value:11.9},{name:'Justiciar chestguard',value:11.0},{name:'Justiciar faceguard',value:13.2},{name:'3rd age mage hat',value:14.9}
+];
+const mid=[{name:'Bandos tassets',value:15.1},{name:'Abyssal bludgeon',value:16.9},{name:'Dexterous prayer scroll',value:17.2},{name:'Primordial crystal',value:18.4},{name:'Ring of suffering',value:19.9},{name:'Necklace of anguish',value:20.3},{name:'Crystal tool seed',value:22.1},{name:'Bandos chestplate',value:23.8},{name:'3rd age range coif',value:17.6}];
+const upper=[{name:'3rd age range top',value:28.1},{name:'3rd age robe',value:28.6},{name:'Dragon hunter crossbow',value:30.5},{name:'3rd age plateskirt',value:34.0},{name:'Armadyl crossbow',value:38.0}];
+const high=[{name:'3rd age amulet',value:47.0},{name:'Dragon hunter lance',value:48.5},{name:'Kodai wand',value:59.0},{name:'Dragon metal slice',value:59.0},{name:'3rd age kiteshield',value:64.0}];
+const prizes=new Array(150),bands=new Array(150);Object.keys(jackpots).forEach(k=>{prizes[+k]=jackpots[k];bands[+k]='jp'});
+const normalPool=[];function addToPool(count,arr,band){for(let j=0;j<count;j++)normalPool.push({prize:{...arr[j%arr.length]},band})}addToPool(98,low,'low');addToPool(27,mid,'mid');addToPool(13,upper,'upper');addToPool(9,high,'high');function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}}shuffle(normalPool);let normalIndex=0;for(let i=0;i<150;i++){if(Object.prototype.hasOwnProperty.call(jackpots,i))continue;const e=normalPool[normalIndex++];prizes[i]=e.prize;bands[i]=e.band}
+const rotor=document.getElementById('rotor'),spin=document.getElementById('spin'),clear=document.getElementById('clear'),result=document.getElementById('result'),history=document.getElementById('history'),spinCountEl=document.getElementById('spinCount'),totalEl=document.getElementById('total'),itemCountEl=document.getElementById('itemCount');const cx=470,cy=470,R=423,r=118,N=150,step=360/N;const fills={low:'#30343a',mid:'#3d434a',upper:'#4b525a',high:'#5b636c',jp:'#d6a62f'};
+function polar(rad,d){const a=(d-90)*Math.PI/180;return[cx+rad*Math.cos(a),cy+rad*Math.sin(a)]}function wedge(a,b){const A=polar(R,a),B=polar(R,b),C=polar(r,b),D=polar(r,a);return`M ${A[0]} ${A[1]} A ${R} ${R} 0 0 1 ${B[0]} ${B[1]} L ${C[0]} ${C[1]} A ${r} ${r} 0 0 0 ${D[0]} ${D[1]} Z`}function short(s){return s.replace("Inquisitor's",'Inq.').replace('Dragon hunter','DH').replace('Annihilation weapon scroll','Annihilation').replace('Armageddon weapon scroll','Armageddon').replace('Dexterous prayer scroll','Dexterous').replace('Necklace of anguish','Anguish').replace('Gilded dragonhide set','Gilded d\'hide').replace('Justiciar chestguard','Justiciar chest').replace('Justiciar faceguard','Justiciar face').replace('3rd age','3a')}function gp(v){if(v>=1000)return(v/1000).toFixed(2)+'B GP';return v.toFixed(v>=100?0:1)+'m GP'}
+for(let i=0;i<N;i++){const a=i*step,b=(i+1)*step,m=a+step/2,isJ=bands[i]==='jp';const p=document.createElementNS('http://www.w3.org/2000/svg','path');p.setAttribute('d',wedge(a,b));p.setAttribute('fill',fills[bands[i]]);p.setAttribute('stroke',isJ?'#fff0a8':'#181b1f');p.setAttribute('stroke-width',isJ?'4':'0.65');if(isJ)p.setAttribute('filter','url(#glow)');rotor.appendChild(p);const[x,y]=polar(275,m),g=document.createElementNS('http://www.w3.org/2000/svg','g');g.setAttribute('transform',`translate(${x} ${y}) rotate(${m+90})`);const t=document.createElementNS('http://www.w3.org/2000/svg','text');t.setAttribute('text-anchor','middle');t.setAttribute('font-size',isJ?'10.5':'7.2');t.setAttribute('font-weight',isJ?'900':'600');t.setAttribute('fill',isJ?'#181202':'#f4f5f6');t.textContent=isJ?'★ '+short(prizes[i].name)+' ★':short(prizes[i].name);g.appendChild(t);rotor.appendChild(g)}
+let rotation=0,busy=false,rolls=[],total=0;const reduced=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;if(reduced)rotor.style.transition='transform .01s linear';function renderList(){spinCountEl.textContent=String(rolls.length);itemCountEl.textContent=rolls.length+(rolls.length===1?' item':' items');totalEl.textContent=gp(total);if(!rolls.length){history.textContent='No items yet.';clear.disabled=true;return}clear.disabled=false;const grouped=new Map();rolls.forEach(r=>{const key=r.name+'|'+r.value+'|'+r.jp;if(!grouped.has(key))grouped.set(key,{...r,count:0});grouped.get(key).count++});history.innerHTML=Array.from(grouped.values()).map(r=>`<div class="row"><span>${r.jp?'🏆 ':''}${r.name}${r.count>1?' ×'+r.count:''}</span><strong>${gp(r.value*r.count)}</strong></div>`).join('')}
+spin.disabled=false;spin.textContent='SPIN WHEEL';renderList();spin.addEventListener('click',()=>{if(busy)return;busy=true;spin.disabled=true;spin.textContent='SPINNING…';const idx=Math.floor(Math.random()*N),center=idx*step+step/2,target=360-center,current=((rotation%360)+360)%360;rotation+=360*7+((target-current)+360)%360;rotor.style.transform=`rotate(${rotation}deg)`;setTimeout(()=>{const prize=prizes[idx],isJ=bands[idx]==='jp';rolls.push({name:prize.name,value:prize.value,jp:isJ});total+=prize.value;result.innerHTML=`<div class="small">Slot #${idx+1}</div><div class="big">${isJ?'🏆 ':''}${prize.name}</div><div style="margin-top:5px;font-weight:800">${gp(prize.value)}</div>${isJ?'<div style="margin-top:5px;font-weight:900;color:#f0c34d">JACKPOT!</div>':''}`;renderList();busy=false;spin.disabled=false;spin.textContent='SPIN AGAIN'},reduced?30:4750)});clear.addEventListener('click',()=>{if(busy)return;rolls=[];total=0;result.innerHTML='<div class="small">Winning item</div><div class="big">List cleared</div>';renderList()});
 })();
 </script>
 </body>
