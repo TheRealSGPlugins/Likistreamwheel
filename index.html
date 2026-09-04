@@ -151,17 +151,33 @@ button:disabled{opacity:.55;cursor:not-allowed}
 
   const prizes=new Array(150),bands=new Array(150);
   Object.keys(jackpots).forEach(k=>{prizes[+k]=jackpots[k];bands[+k]='jp'});
-  const free=[];
-  for(let i=0;i<150;i++) if(!Object.prototype.hasOwnProperty.call(jackpots,i)) free.push(i);
-  let pos=0;
-  function fill(count,arr,band){
+
+  const normalPool=[];
+  function addToPool(count,arr,band){
     for(let j=0;j<count;j++){
-      const slot=free[pos++];
-      prizes[slot]={...arr[j%arr.length]};
-      bands[slot]=band;
+      normalPool.push({prize:{...arr[j%arr.length]},band});
     }
   }
-  fill(98,low,'low'); fill(27,mid,'mid'); fill(13,upper,'upper'); fill(9,high,'high');
+  addToPool(98,low,'low');
+  addToPool(27,mid,'mid');
+  addToPool(13,upper,'upper');
+  addToPool(9,high,'high');
+
+  function shuffle(array){
+    for(let i=array.length-1;i>0;i--){
+      const j=Math.floor(Math.random()*(i+1));
+      [array[i],array[j]]=[array[j],array[i]];
+    }
+  }
+  shuffle(normalPool);
+
+  let normalIndex=0;
+  for(let i=0;i<150;i++){
+    if(Object.prototype.hasOwnProperty.call(jackpots,i)) continue;
+    const entry=normalPool[normalIndex++];
+    prizes[i]=entry.prize;
+    bands[i]=entry.band;
+  }
 
   const rotor=document.getElementById('rotor');
   const spin=document.getElementById('spin');
